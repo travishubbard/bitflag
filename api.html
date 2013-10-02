@@ -1,0 +1,72 @@
+<html ng-app>
+<head>
+	<title>API Bit Flag Tool</title>
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+</head>
+<body ng-controller='APIController'>
+	<h2>API Bit Flag Tool</h2>
+	<div>
+		<p>
+		<span>Mask:</span>
+		<input ng-model='maskValue'>
+		<br>
+		<button ng-click="evalFlags(maskValue)" type="button" class="btn btn-primary btn-xs">evalFlags</button>
+		</p>
+	</div>
+	<div ng-repeat='item in items'>
+		<span>{{item.title}}</span>
+		<input ng-model='item.flag_value'>
+		<span>{{decToBinary( item.flag_value )}}</span>
+	</div>
+	<button ng-click="addFlag()" type="button" class="btn btn-primary btn-xs">Add Flag</button>
+
+	 <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script>
+	 <script>
+	 	
+	 	//https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Bitwise_Operators
+
+	 	function APIController($scope){
+
+			$scope.maskValue = 0;
+
+	 		// create a few default flags
+	 		$scope.items = [
+	  			{title: 'FLAG_1', flag_value: 1},
+	            {title: 'FLAG_2', flag_value: 2},
+	            {title: 'FLAG_4', flag_value: 4},
+	            {title: 'FLAG_8', flag_value: 8}
+	 		];
+	 		// $scope.lastValue is set to the highest bit value used in $scope.items
+	 		// need this to increment flag values in addFlag()
+	 		$scope.lastValue = 8;
+
+	 		$scope.addFlag = function(){
+	 			$scope.lastValue = $scope.lastValue * 2;
+	 			$scope.items.push({"title": "FLAG_" + $scope.lastValue, "flag_value": $scope.lastValue});
+	 		};
+
+	 		$scope.decToBinary = function(nMyNumber){
+				return nMyNumber.toString(2);
+	 		};
+
+	 		$scope.evalFlags = function(flags){
+
+				var FLAG_DEFAULT = 1; // set which of these you want to be the default
+
+				// set to default if no flag is passed
+				if (flags == 0 || flags == '' || flags == null){
+					flags = FLAG_DEFAULT;
+				}
+
+				//iterate through $scope.items	
+				for(i in $scope.items) {
+           			 if( flags & $scope.items[i].flag_value) {
+            			alert( $scope.items[i].title + ' is set');		
+            		}
+        		}  
+	 		}
+	 	}
+	 </script>
+</body>
+</html>
